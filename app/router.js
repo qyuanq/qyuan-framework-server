@@ -26,6 +26,8 @@ module.exports = app => {
   router.post('/mergeFile', controller.util.mergeFile);
   // 文件秒传续传
   router.post('/checkfile', controller.util.checkfile);
+  // 文件下载返回文件流
+  router.post('/download', controller.util.download);
 
   router.group({ name: 'user', prefix: '/user' }, router => {
     const { register, login, info } = controller.user;

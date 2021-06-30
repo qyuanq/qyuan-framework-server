@@ -10,7 +10,7 @@ class BaseController extends Controller {
 
   message(message) {
     this.ctx.body = {
-      code: 0,
+      code: 20000,
       message,
     };
   }

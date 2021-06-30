@@ -5,6 +5,7 @@ const svgCaptcha = require('svg-captcha');
 const fsextra = require('fs-extra');
 const path = require('path');
 const qiniu = require('qiniu');
+const fs = require('fs');
 
 class UtilController extends BaseController {
   async getCaption() {
@@ -132,6 +133,26 @@ class UtilController extends BaseController {
     return fsextra.existsSync(dirPath)
       ? (await fsextra.readdir(dirPath)).filter(name => name[0] !== '.') // 除去隐藏文件，其余切片都返回
       : []; // 文件夹不存在返回空
+  }
+
+
+  /**
+   * 下载文件流
+   */
+  async download() {
+    const filePath = path.resolve(__dirname, '../public/a0ce40201caca1835fdc86c3fe05a24f.jpg');
+    // 创建读取流
+    const readStream = fs.createReadStream(filePath);
+    console.log('读取流', readStream);
+
+
+    // // 写入
+    // const writeStream = fs.createWriteStream(path.resolve(__dirname, '../public/1.jpg'));
+    // // 管道流从输入定位到输出
+    // readStream.pipe(writeStream);
+
+    this.ctx.set('Content-Type', 'application/octet-stream');
+    this.ctx.body = readStream;
   }
 }
 
