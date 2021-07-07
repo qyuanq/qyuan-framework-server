@@ -6,6 +6,7 @@ const fsextra = require('fs-extra');
 const path = require('path');
 const qiniu = require('qiniu');
 const fs = require('fs');
+const sizeOf = require('image-size');
 
 class UtilController extends BaseController {
   async getCaption() {
@@ -65,8 +66,12 @@ class UtilController extends BaseController {
     const ext = file.filename.split('.').pop();
     const fileHashName = hash + '.' + ext;
     await fsextra.move(file.filepath, this.config.UPLOAD_DIR + '/' + fileHashName);
+    // 个别需求：获取图片宽高 传递给前端
+    const dimensions = sizeOf(`./app/public/${fileHashName}`);
     this.success({
       url: `/public/${fileHashName}`,
+      height: dimensions.height,
+      width: dimensions.width,
     });
   }
 
