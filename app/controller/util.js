@@ -62,6 +62,15 @@ class UtilController extends BaseController {
     const file = ctx.request.files[0];
     const { hash } = ctx.request.body;
     console.log(hash, file);
+    // 替换图片功能，如不需要替换可删除
+    if (ctx.request.body.oldImage) {
+      const oldImage = ctx.request.body.oldImage;
+      await fsextra.remove(this.config.UPLOAD_DIR + '/' + oldImage, err => {
+        if (err) {
+          return console.error(err);
+        }
+      });
+    }
     // 将文件临时地址移动到目标地址
     const ext = file.filename.split('.').pop();
     const fileHashName = hash + '.' + ext;
@@ -72,7 +81,24 @@ class UtilController extends BaseController {
       url: `/public/${fileHashName}`,
       height: dimensions.height,
       width: dimensions.width,
+      name: fileHashName,
     });
+  }
+
+  /**
+  * 删除文件
+  * @params name
+  */
+  async deleteSmailFile() {
+    const { ctx } = this;
+    const { name } = ctx.request.query;
+    console.log('删除', name);
+    await fsextra.remove(this.config.UPLOAD_DIR + '/' + name, err => {
+      if (err) {
+        return console.error(err);
+      }
+    });
+    this.message('删除成功');
   }
 
   // 切片上传

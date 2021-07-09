@@ -20,6 +20,8 @@ module.exports = app => {
 
   // 小文件直接上传
   router.post('/updateSmailFile', controller.util.updateSmailFile);
+  // 文件删除
+  router.delete('/updateSmailFile', controller.util.deleteSmailFile);
   // 文件上传
   router.post('/updateFile', controller.util.updateFile);
   // 文件合并
