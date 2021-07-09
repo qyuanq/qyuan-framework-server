@@ -93,6 +93,10 @@ class UtilController extends BaseController {
     const { ctx } = this;
     const { name } = ctx.request.query;
     console.log('删除', name);
+    if (!name) {
+      this.error('删除失败');
+      return;
+    }
     await fsextra.remove(this.config.UPLOAD_DIR + '/' + name, err => {
       if (err) {
         return console.error(err);
