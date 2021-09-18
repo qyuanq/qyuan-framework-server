@@ -19,7 +19,8 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.1",
     "qiniu": "^7.3.3",
-    "svg-captcha": "^1.4.0"
+    "svg-captcha": "^1.4.0",
+    "ws": "^8.2.2"
   },
   "devDependencies": {
     "autod": "^3.0.1",

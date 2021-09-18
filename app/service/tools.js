@@ -47,7 +47,7 @@ class ToolService extends Service {
     chunks.sort((a, b) => a.split('-')[1] - b.split('-')[1]);
     // chunks每一项的完整路径
     chunks = chunks.map(cp => path.resolve(chunksDir, cp));
-    await this.mergeChunks(chunks, filePath, size);
+    await this.mergeChunks(chunks, filePath, size, chunksDir);
   }
 
   /**
@@ -55,8 +55,9 @@ class ToolService extends Service {
      * @param {*} chunks 所有切片文件
      * @param {*} filePath 目标合并文件路径
      * @param {*} size  切片大小
+     * @param {*} chunksDir 目录
      */
-  async mergeChunks(files, dest, size) {
+  async mergeChunks(files, dest, size, chunksDir) {
     const pipStream = (filePath, writeStream) =>
       new Promise(resolve => {
         // 读这个文件
@@ -69,16 +70,19 @@ class ToolService extends Service {
         });
         readStream.pipe(writeStream);
       });
-
+    const arr = [];
+    files.forEach((file, index) => {
+      arr[index] = pipStream(file, fsExtra.createWriteStream(dest, {
+        start: index * size,
+        end: (index + 1) * size,
+      }));
+    });
     // Promise.all([])
     await Promise.all(
-      files.forEach((file, index) => {
-        pipStream(file, fsExtra.createWriteStream(dest, {
-          start: index * size,
-          end: (index + 1) * size,
-        }));
-      })
+      arr
     );
+    // 清空目录
+    fsExtra.rmdirSync(chunksDir);
   }
 
 }
